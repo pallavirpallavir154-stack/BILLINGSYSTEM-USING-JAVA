@@ -4,12 +4,8 @@ import java.awt.event.*;
 public class Billing extends JFrame implements ActionListener {
 
     JLabel customerLabel, amountLabel;
-
-    JTextField customerField;
-    JTextField amountField;
-
-    JButton generateBtn;
-    JButton clearBtn;
+    JTextField customerField, amountField;
+    JButton generateBtn, clearBtn;
 
     public Billing() {
 
@@ -49,45 +45,43 @@ public class Billing extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == clearBtn) {
-
+        if(e.getSource()==clearBtn){
             customerField.setText("");
             amountField.setText("");
-            return;
         }
 
-        if (e.getSource() == generateBtn) {
+        if(e.getSource()==generateBtn){
 
-            try {
+            try{
 
                 String customer = customerField.getText();
-
-                if(customer.isEmpty()){
-                    JOptionPane.showMessageDialog(this,"Enter Customer Name");
-                    return;
-                }
-
                 double amount = Double.parseDouble(amountField.getText());
 
-                new Invoice(customer, amount);
+                double gst = amount * 0.18;
+                double total = amount + gst;
 
-            } catch (NumberFormatException ex) {
+                String bill =
+                        "=========== BILL ===========\n\n" +
+                        "Customer : " + customer + "\n" +
+                        "Amount   : ₹" + amount + "\n" +
+                        "GST 18%  : ₹" + gst + "\n" +
+                        "---------------------------\n" +
+                        "Total    : ₹" + total + "\n\n" +
+                        "Thank You!";
+
+                JTextArea area = new JTextArea(bill);
+                area.setEditable(false);
+
+                JOptionPane.showMessageDialog(this, new JScrollPane(area));
+
+            }catch(Exception ex){
 
                 JOptionPane.showMessageDialog(this,
-                        "Please enter a valid amount.");
-
-            } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(this,
-                        ex.getMessage());
+                        "Enter a valid amount.");
 
             }
-
         }
-
     }
-
 }
