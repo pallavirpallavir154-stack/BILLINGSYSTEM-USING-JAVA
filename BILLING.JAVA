@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Billing extends JFrame implements ActionListener{
+public class Billing extends JFrame implements ActionListener {
 
     JLabel customerLabel, amountLabel;
 
@@ -9,75 +9,84 @@ public class Billing extends JFrame implements ActionListener{
     JTextField amountField;
 
     JButton generateBtn;
+    JButton clearBtn;
 
-    public Billing(){
+    public Billing() {
 
-        setTitle("Generate Bill");
-
-        setSize(400,280);
-
+        setTitle("Billing System");
+        setSize(400,300);
         setLayout(null);
-
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        customerLabel = new JLabel("Customer");
-
-        customerLabel.setBounds(30,40,100,25);
-
+        customerLabel = new JLabel("Customer Name");
+        customerLabel.setBounds(30,40,120,25);
         add(customerLabel);
 
         customerField = new JTextField();
-
-        customerField.setBounds(140,40,180,25);
-
+        customerField.setBounds(160,40,180,25);
         add(customerField);
 
         amountLabel = new JLabel("Amount");
-
-        amountLabel.setBounds(30,90,100,25);
-
+        amountLabel.setBounds(30,90,120,25);
         add(amountLabel);
 
         amountField = new JTextField();
-
-        amountField.setBounds(140,90,180,25);
-
+        amountField.setBounds(160,90,180,25);
         add(amountField);
 
         generateBtn = new JButton("Generate Bill");
-
-        generateBtn.setBounds(110,170,150,35);
-
+        generateBtn.setBounds(50,180,130,35);
         add(generateBtn);
 
+        clearBtn = new JButton("Clear");
+        clearBtn.setBounds(210,180,130,35);
+        add(clearBtn);
+
         generateBtn.addActionListener(this);
+        clearBtn.addActionListener(this);
 
         setVisible(true);
-
     }
 
-    public void actionPerformed(ActionEvent e){
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        double amount = Double.parseDouble(amountField.getText());
+        if (e.getSource() == clearBtn) {
 
-        double gst = amount * 0.18;
+            customerField.setText("");
+            amountField.setText("");
+            return;
+        }
 
-        double total = amount + gst;
+        if (e.getSource() == generateBtn) {
 
-        String bill =
-                "\n******** BILL ********\n\n"+
-                "Customer : "+customerField.getText()+
-                "\nAmount : ₹"+amount+
-                "\nGST (18%) : ₹"+gst+
-                "\n------------------------"+
-                "\nGrand Total : ₹"+total+
-                "\n\nThank You!\n";
+            try {
 
-        JTextArea area = new JTextArea(bill);
+                String customer = customerField.getText();
 
-        area.setEditable(false);
+                if(customer.isEmpty()){
+                    JOptionPane.showMessageDialog(this,"Enter Customer Name");
+                    return;
+                }
 
-        JOptionPane.showMessageDialog(this,new JScrollPane(area),"Invoice",JOptionPane.INFORMATION_MESSAGE);
+                double amount = Double.parseDouble(amountField.getText());
+
+                new Invoice(customer, amount);
+
+            } catch (NumberFormatException ex) {
+
+                JOptionPane.showMessageDialog(this,
+                        "Please enter a valid amount.");
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(this,
+                        ex.getMessage());
+
+            }
+
+        }
 
     }
 
